@@ -150,9 +150,10 @@ class StravaClient:
                 load_more_activies = False
             page += 1
 
-            for activity in activities:
+            # Remove activities that are already in the db
+            new_activities = [activity for activity in activities if not self.activity_db.activity_exists(activity["id"])]
+            for activity in new_activities:
                 details = self.get_activity_details(activity["id"])
-                print(f"{activity['name']}", flush=True)
                 self.activity_db.insert_activity({**activity, **details})
 
         # When done get unique gear_ids and diff with content of gear table

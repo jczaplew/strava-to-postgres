@@ -16,9 +16,15 @@ class ActivityDBClient:
         self.cursor = self.connection.cursor()
 
 
-    def insert_activity(self, activity):
-        # TODO: Ensure we don't insert duplicates
+    def activity_exists(self, source_id):
+        self.cursor.execute("""
+            SELECT id FROM activities WHERE source_id = %(source_id)s AND source = 'strava'
+        """, {"source_id": source_id})
+        result = self.cursor.fetchone()
+        return False if result is None else True
 
+
+    def insert_activity(self, activity):
         # Insert into db
         print(f"{activity['name']}", flush=True)
         try:
