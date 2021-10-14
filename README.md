@@ -15,6 +15,8 @@ Next, bring the app up using Docker. If it has never been run, you will be promp
 docker-compose up
 ````
 
+This will also bring up the database `activities`, which is mapped to port `15432` on the host with the username and password of `docker`.
+
 ## Visualize
 Included is a QGIS layout `activities.qgz` that can be used to visualize your data on a map
 
