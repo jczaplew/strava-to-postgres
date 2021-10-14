@@ -26,6 +26,7 @@ class StravaClient:
         self.n_requests = 0
         self.start_time = time.time()
         if exists('./.credentials.json'):
+            print("Using existing credentials", flush=True)
             with open('./.credentials.json', 'r') as input:
                 self.credentials = json.load(input)
                 if datetime.now().timestamp() > self.credentials["EXPIRES"]:
@@ -39,7 +40,7 @@ class StravaClient:
 
 
     def _refresh_access_token(self):
-        print("Refreshing expired access token...")
+        print("Refreshing expired access token...", flush=True)
         self._authenticate({
             "client_id": CLIENT_ID,
             "client_secret": CLIENT_SECRET,
@@ -151,7 +152,7 @@ class StravaClient:
 
             for activity in activities:
                 details = self.get_activity_details(activity["id"])
-                print(f"{activity['name']}")
+                print(f"{activity['name']}", flush=True)
                 self.activity_db.insert_activity({**activity, **details})
 
         # When done get unique gear_ids and diff with content of gear table

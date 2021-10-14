@@ -1,0 +1,60 @@
+version: "3"
+
+services:
+  # pg_tileserv:
+  #   image: pramsey/pg_tileserv:latest-alpine-3.12
+  #   build:
+  #     context: ../..
+  #     dockerfile: Dockerfile.alpine
+  #     args:
+  #       VERSION: latest-alpine-3.12
+
+  #   container_name: pg_tileserv
+
+  #   env_file:
+  #     - pg_tileserv.env
+
+  #   depends_on:
+  #     - db
+
+  #   ports:
+  #     - 7800:7800
+
+  db:
+    image: postgis/postgis:14-3.1-alpine
+
+    container_name: db
+
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./z_schema.sql:/docker-entrypoint-initdb.d/z_schema.sql
+
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=activities
+    
+    ports:
+      - 15432:5432
+    
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    
+    container_name: app
+    
+    volumes:
+      - .:/code:delegated
+      
+    environment:
+      - DB_USER=docker
+      - DB_PASSWORD=docker
+      - DB_NAME=activities
+      - DB_HOST=db
+
+    depends_on:
+      - db
+
+volumes:
+  db_data:
